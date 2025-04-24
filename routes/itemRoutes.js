@@ -7,13 +7,13 @@ import {
   deleteItem,
 } from "../controllers/itemController.js";
 
-const router = Router();
+const itemRoutes = Router();
 
 // Routes pour les items
-router.get("/", getAllItems);
-router.get("/:id", getItemById);
-router.post("/", createItem);
-router.put("/:id", updateItem);
-router.delete("/:id", deleteItem);
+itemRoutes.get("/", getAllItems);
+itemRoutes.get("/:id", getItemById);
+itemRoutes.post("/create", createItem);
+itemRoutes.put("/:id", updateItem);
+itemRoutes.delete("/:id", deleteItem);
 
-export default router;
+export default itemRoutes;
