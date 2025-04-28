@@ -12,7 +12,7 @@ const itemRoutes = Router();
 // Routes pour les items
 itemRoutes.get("/", getAllItems);
 itemRoutes.get("/:id", getItemById);
-itemRoutes.post("/create", createItem);
+itemRoutes.post("/", createItem);
 itemRoutes.put("/:id", updateItem);
 itemRoutes.delete("/:id", deleteItem);
 
