@@ -1,11 +1,41 @@
 import express from "express";
-import dotenv from "dotenv";
+import { PORT } from "./config/env.js";
 import itemRoutes from "./routes/itemRoutes.js";
+import connectDB from "./config/db.js";
+import { promises as fsPromises } from "fs";
+import path from "path";
+import Item from "./models/Item.js";
 
-dotenv.config();
+// Connexion à MongoDB
+connectDB();
+
+// Initialisation des données depuis data.json
+const initializeData = async () => {
+  try {
+    // Vérifier s'il y a déjà des données dans la collection
+    const count = await Item.countDocuments();
+
+    if (count === 0) {
+      // Lire les données depuis data.json
+      const dataPath = path.join(process.cwd(), "data.json");
+      const jsonData = await fsPromises.readFile(dataPath, "utf8");
+      const items = JSON.parse(jsonData);
+
+      // Insérer les données dans MongoDB
+      await Item.insertMany(items);
+      console.log("Données initiales importées avec succès");
+    } else {
+      console.log("La base de données contient déjà des données");
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'initialisation des données:", error);
+  }
+};
+
+// Appel de la fonction d'initialisation
+initializeData();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware pour parser le JSON
 app.use(express.json());
@@ -28,6 +58,8 @@ app.use((req, res, next) => {
 app.use("/items", itemRoutes);
 
 // Démarrer le serveur
-app.listen(PORT, () => {
-  console.log(`Le serveur est démarré et écoute sur http://localhost:${PORT}`);
+app.listen(PORT || 3000, () => {
+  console.log(
+    `Le serveur est démarré et écoute sur http://localhost:${PORT || 3000}`
+  );
 });
